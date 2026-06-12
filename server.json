@@ -1,0 +1,66 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.fonteum/mcp-server",
+  "title": "Fonteum — Healthcare Provider Data (hosted)",
+  "description": "Hosted, read-only MCP server for the source-provenanced US federal healthcare provider data graph. Resolve providers by NPI across NPPES, OIG LEIE, CMS PECOS, Care Compare, and Open Payments; list the 23 federal source families; read published methodology. Every field carries a 14-tuple provenance contract (source, snapshot, methodology, license, coverage window, signed build attestation).",
+  "version": "1.0.0",
+  "websiteUrl": "https://fonteum.com",
+  "repository": {
+    "url": "https://github.com/fonteum/mcp-server",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.fonteum.com/api/mcp",
+      "headers": [
+        {
+          "name": "x-fonteum-mcp-key",
+          "description": "Optional. Anonymous access is rate-limited per IP (30 requests/minute). Set a key to lift the limit. Request one at mcp@fonteum.com.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "author": {
+        "name": "Dr. Jennifer Montecillo, MD",
+        "email": "mcp@fonteum.com",
+        "url": "https://fonteum.com"
+      },
+      "license": "MIT",
+      "categories": ["healthcare", "data", "provenance"],
+      "keywords": [
+        "healthcare",
+        "provider-data",
+        "nppes",
+        "cms",
+        "oig-leie",
+        "open-payments",
+        "fhir",
+        "provenance",
+        "open-data"
+      ],
+      "tools": [
+        {
+          "name": "list_sources",
+          "description": "List the 23 federal source families Fonteum reconciles every healthcare-provider field against, each with authority, tier, refresh cadence, and official source URL."
+        },
+        {
+          "name": "get_provider",
+          "description": "Look up a single healthcare provider by NPI (10-digit, Luhn-checked); returns specialty, taxonomy, and location with per-field provenance."
+        },
+        {
+          "name": "search_providers",
+          "description": "Search healthcare providers by vertical + state (optional county); returns up to 100 records with provenance."
+        },
+        {
+          "name": "get_methodology",
+          "description": "Return the Fonteum methodology version, the canonical /methodology URL, and the fourteen-field provenance contract spec."
+        }
+      ]
+    }
+  }
+}

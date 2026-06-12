@@ -1,0 +1,62 @@
+# Smithery.ai manifest for the hosted Fonteum MCP server.
+# Schema reference: https://smithery.ai/docs/build/project-config
+#
+# NOTE: this server is REMOTE (hosted streamable-HTTP), not a deployable code
+# package. Smithery's exact schema for remote servers evolves — treat this as a
+# best-effort shape and reconcile against the live schema at smithery.ai before
+# submitting. See PUBLISH.md.
+
+name: "fonteum/mcp-server"
+displayName: "Fonteum — Healthcare Provider Data"
+version: "1.0.0"
+description: >-
+  Hosted, read-only MCP server for the source-provenanced US federal healthcare
+  provider data graph. Resolve providers by NPI across NPPES, OIG LEIE, CMS
+  PECOS, Care Compare, and Open Payments. Every field carries a fourteen-field
+  provenance contract.
+author:
+  name: "Dr. Jennifer Montecillo, MD"
+  email: "mcp@fonteum.com"
+  url: "https://fonteum.com"
+license: MIT
+homepage: "https://fonteum.com"
+repository: "https://github.com/fonteum/mcp-server"
+
+categories:
+  - healthcare
+  - data
+  - provenance
+
+keywords:
+  - healthcare
+  - provider-data
+  - nppes
+  - cms
+  - oig-leie
+  - fhir
+  - provenance
+
+# Remote runtime — Smithery connects to the already-hosted streamable-HTTP
+# endpoint rather than building/deploying a package.
+runtime: "remote"
+startCommand:
+  type: http
+  url: "https://mcp.fonteum.com/api/mcp"
+  configSchema:
+    type: object
+    properties:
+      fonteumMcpKey:
+        type: string
+        title: "Fonteum MCP key (optional)"
+        description: "Optional. Lifts the 30 requests/minute anonymous per-IP rate limit. Sent as the x-fonteum-mcp-key header."
+    required: []
+
+tools:
+  - name: list_sources
+    description: "List the 23 federal source families Fonteum reconciles against."
+  - name: get_provider
+    description: "Look up a provider by NPI with per-field provenance."
+  - name: search_providers
+    description: "Search providers by vertical + state."
+  - name: get_methodology
+    description: "Methodology version + the fourteen-field provenance contract."
