@@ -8,11 +8,11 @@ healthcare provider data graph.**
 Fonteum joins the federal healthcare datasets — NPPES, OIG LEIE, CMS PECOS, CMS
 Care Compare, CMS Open Payments, HRSA, and more (23 source families) — into one
 provider graph keyed on the National Provider Identifier (NPI). This MCP server
-lets an LLM or agent resolve a provider, read dataset methodology, search the
-graph, and list the underlying sources, with **every returned field tied back to
-its upstream source, snapshot date, and license** through a fourteen-field
-provenance contract. No trust badges, no opaque scores — radical source
-transparency.
+lets an LLM or agent search the graph, resolve a provider, check exclusion
+status, read dataset methodology, and list the underlying sources, with **every
+returned field tied back to its upstream source, snapshot date, and license**
+through a fourteen-field provenance contract. No trust badges, no opaque
+scores — radical source transparency.
 
 - **Hosted MCP endpoint:** `https://mcp.fonteum.com/api/mcp`
   (also served from the apex at `https://fonteum.com/api/mcp` — same deployment)
@@ -62,20 +62,84 @@ as the [`@fonteum/mcp`](https://www.npmjs.com/package/@fonteum/mcp) npm package:
 claude mcp add fonteum -- npx -y @fonteum/mcp
 ```
 
-The hosted server (this repo) and the npm package read the same federal graph
-and return the same provenance contract; the hosted server is the zero-install
-path, the npm package is the offline/self-hosted path.
+The hosted server (this repo) and the npm package expose the **same five tools**,
+read the same federal graph, and return the same provenance contract — enforced
+by a CI parity gate so the two surfaces cannot drift. The hosted server is the
+zero-install path; the npm package is the offline/self-hosted path.
 
 ---
 
 ## Tools
 
 Every tool result is a JSON envelope `{ "data": …, "provenance": { …14 keys… } }`.
-All four tools are **read-only**.
+All five tools are **read-only**.
 
-### `list_sources`
+### `fonteum_search_provider`
 
-List the 23 federal source families Fonteum reconciles every healthcare-provider
+Search healthcare providers by vertical + state (with an optional county filter),
+name, or specialty/taxonomy. Returns up to 100 records (default 25).
+
+- **Input:** `{ "vertical": "dermatologists", "state": "TX", "limit": 5 }`
+
+```jsonc
+// fonteum_search_provider { "vertical": "dermatologists", "state": "TX", "limit": 5 }  →
+{
+  "data": { "vertical": "dermatologists", "state": "TX", "total_in_state": 42, "returned": 5, "hits": [ { "npi": "…", "city": "…", "taxonomy_primary": "…" }, … ] },
+  "provenance": { "_source": "CMS NPPES NPI Registry", … }
+}
+```
+
+### `fonteum_get_provider`
+
+Resolve a single healthcare provider by NPI (10-digit, Luhn-checked) across all
+federal sources. Returns the joined record — specialty, taxonomy, location — with
+per-field provenance.
+
+- **Input:** `{ "npi": "1003000118" }`
+
+```jsonc
+// fonteum_get_provider { "npi": "1003000118" }  →
+{
+  "data": { "npi": "1003000118", "specialty_display": "Dermatologists", "state": "CA", "city": "…", "snapshot_date": "2026-06-12" },
+  "provenance": { "_source": "CMS NPPES NPI Registry", "_source_url": "https://npiregistry.cms.hhs.gov/", "_confidence": 1.0, … }
+}
+```
+
+### `fonteum_check_exclusion`
+
+Unified "excluded anywhere" check by NPI across the federal OIG List of Excluded
+Individuals/Entities (LEIE) and state Medicaid exclusion lists. Returns the
+exclusion flag and any matched exclusion records with provenance.
+
+- **Input:** `{ "npi": "1003000118" }`
+
+```jsonc
+// fonteum_check_exclusion { "npi": "1003000118" }  →
+{
+  "data": { "npi": "1003000118", "is_excluded": false, "matches": [] },
+  "provenance": { "_source": "OIG LEIE + state Medicaid exclusion lists", "_source_url": "https://oig.hhs.gov/exclusions/exclusions_list.asp", … }
+}
+```
+
+### `fonteum_dataset_info`
+
+Return the published methodology and metadata for a federal source family
+(`nppes`, `oig-leie`, `cms-pecos`, `cms-open-payments`, `cms-care-compare`, …),
+including the methodology version, canonical URL, and provenance-contract spec.
+
+- **Input:** `{ "dataset": "nppes" }`
+
+```jsonc
+// fonteum_dataset_info { "dataset": "nppes" }  →
+{
+  "data": { "dataset": "nppes", "methodology_version": "v2026.05.0", "methodology_url": "https://fonteum.com/methodology", "refresh_cadence": "weekly" },
+  "provenance": { … }
+}
+```
+
+### `fonteum_list_sources`
+
+List the federal source families Fonteum reconciles every healthcare-provider
 field against (NPPES, OIG LEIE, CMS PECOS, CMS Care Compare, CMS Open Payments,
 HRSA HPSA, and more), each with its authority, tier, refresh cadence, and the
 official source URL.
@@ -83,55 +147,10 @@ official source URL.
 - **Input:** none.
 
 ```jsonc
-// list_sources  →
+// fonteum_list_sources  →
 {
-  "data": { "sources": [ { "slug": "nppes", "authority": "CMS", "refresh_cadence": "weekly", "official_url": "https://npiregistry.cms.hhs.gov/" }, … ], "total": 23 },
+  "data": { "sources": [ { "slug": "nppes", "authority": "CMS", "tier": 1, "refresh_cadence": "weekly", "official_url": "https://npiregistry.cms.hhs.gov/" }, … ], "total": 23 },
   "provenance": { "_source": "Fonteum source registry", "_methodology": "v2026.05.0", … }
-}
-```
-
-### `get_provider`
-
-Look up a single healthcare provider by NPI (10-digit, Luhn-checked). Returns the
-provider's specialty, taxonomy, and location with per-field provenance.
-
-- **Input:** `{ "npi": "1003000118" }`
-
-```jsonc
-// get_provider { "npi": "1003000118" }  →
-{
-  "data": { "npi": "1003000118", "specialty_display": "Dermatologists", "state": "CA", "city": "…", "snapshot_date": "2026-06-12" },
-  "provenance": { "_source": "CMS NPPES NPI Registry", "_source_url": "https://npiregistry.cms.hhs.gov/", "_confidence": 1.0, … }
-}
-```
-
-### `search_providers`
-
-Search healthcare providers by vertical + state (with an optional county filter).
-Returns up to 100 records (default 25).
-
-- **Input:** `{ "vertical": "dermatologists", "state": "TX", "limit": 5 }`
-
-```jsonc
-// search_providers { "vertical": "dermatologists", "state": "TX", "limit": 5 }  →
-{
-  "data": { "vertical": "dermatologists", "state": "TX", "total_in_state": 42, "returned": 5, "hits": [ { "npi": "…", "city": "…", "taxonomy_primary": "…" }, … ] },
-  "provenance": { "_source": "CMS NPPES NPI Registry", … }
-}
-```
-
-### `get_methodology`
-
-Return the Fonteum methodology version, the canonical `/methodology` URL, and the
-fourteen-field provenance contract specification.
-
-- **Input:** none.
-
-```jsonc
-// get_methodology  →
-{
-  "data": { "methodology_version": "v2026.05.0", "methodology_url": "https://fonteum.com/methodology", "provenance_contract": { "fields": [ { "position": 1, "name": "_source", "required": true }, … ] } },
-  "provenance": { … }
 }
 ```
 
