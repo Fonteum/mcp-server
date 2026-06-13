@@ -1,5 +1,7 @@
 # Fonteum MCP Server
 
+[![MCP Badge](https://lobehub.com/badge/mcp/fonteum-mcp-server)](https://lobehub.com/mcp/fonteum-mcp-server)
+
 **Hosted Model Context Protocol server for the source-provenanced US federal
 healthcare provider data graph.**
 
