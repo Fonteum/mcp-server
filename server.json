@@ -12,7 +12,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://mcp.fonteum.com/api/mcp"
+      "url": "https://fonteum.com/api/mcp"
     }
   ],
   "_meta": {

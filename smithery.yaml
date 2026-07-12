@@ -38,7 +38,7 @@ keywords:
 runtime: "remote"
 startCommand:
   type: http
-  url: "https://mcp.fonteum.com/api/mcp"
+  url: "https://fonteum.com/api/mcp"
 
 tools:
   - name: fonteum_resolve_entity

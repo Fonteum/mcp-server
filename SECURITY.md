@@ -7,7 +7,7 @@ federal procurement, sanctions and watchlists, federal enforcement, and global
 open-data corporate registers. **111 active source families in the provenance
 ledger as of 2026-07-12.**
 
-The hosted endpoint is `https://mcp.fonteum.com/api/mcp`. This repository does
+The hosted endpoint is `https://fonteum.com/api/mcp`. This repository does
 not publish a sample credential or require one in its connection examples.
 Clients must protect any credentials issued to them and must not commit them to
 source control, logs, or MCP configuration that is shared publicly.

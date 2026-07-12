@@ -17,14 +17,14 @@ before acting on it.
 
 ## Connect
 
-- **Hosted endpoint:** `https://mcp.fonteum.com/api/mcp`
+- **Hosted endpoint:** `https://fonteum.com/api/mcp`
 - **Transport:** Streamable HTTP
 - **Website:** [fonteum.com](https://fonteum.com)
 
 ### Claude Code
 
 ```bash
-claude mcp add --transport http fonteum https://mcp.fonteum.com/api/mcp
+claude mcp add --transport http fonteum https://fonteum.com/api/mcp
 ```
 
 ### Claude Desktop, Cursor, or Windsurf
@@ -36,7 +36,7 @@ Add the hosted server to your MCP configuration:
   "mcpServers": {
     "fonteum": {
       "type": "http",
-      "url": "https://mcp.fonteum.com/api/mcp"
+      "url": "https://fonteum.com/api/mcp"
     }
   }
 }

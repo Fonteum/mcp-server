@@ -21,7 +21,7 @@ risk score, or verdict.
 
 ## Connect
 
-- Hosted MCP endpoint: `https://mcp.fonteum.com/api/mcp`
+- Hosted MCP endpoint: `https://fonteum.com/api/mcp`
 - Local stdio package: `npx -y @fonteum/mcp@0.3.0`
 - Product documentation: [fonteum.com](https://fonteum.com)
 
