@@ -2,32 +2,24 @@
 
 [![MCP Badge](https://lobehub.com/badge/mcp/fonteum-mcp-server)](https://lobehub.com/mcp/fonteum-mcp-server)
 
-**Hosted Model Context Protocol server for the source-provenanced US federal
-healthcare provider data graph.**
+Hosted, read-only Model Context Protocol (MCP) access to Fonteum's
+source-traced public-records data graph.
 
-Fonteum joins the federal healthcare datasets — NPPES, OIG LEIE, CMS PECOS, CMS
-Care Compare, CMS Open Payments, HRSA, and more (23 source families) — into one
-provider graph keyed on the National Provider Identifier (NPI). This MCP server
-lets an LLM or agent search the graph, resolve a provider, check exclusion
-status, read dataset methodology, and list the underlying sources, with **every
-returned field tied back to its upstream source, snapshot date, and license**
-through a fourteen-field provenance contract. No trust badges, no opaque
-scores — radical source transparency.
+Fonteum covers US healthcare, federal procurement, sanctions and watchlists,
+federal enforcement, and global open-data corporate registers. **111 active
+source families in the provenance ledger as of 2026-07-12.** Where a source
+supports it, results identify the official source, the date Fonteum captured
+the record, and relevant coverage or limitation details.
 
-- **Hosted MCP endpoint:** `https://mcp.fonteum.com/api/mcp`
-  (also served from the apex at `https://fonteum.com/api/mcp` — same deployment)
-- **Discovery document:** `https://fonteum.com/.well-known/mcp.json`
-- **Transport:** Streamable HTTP (JSON-RPC 2.0, stateless)
-- **Auth:** none required. Anonymous access is rate-limited per IP (30 requests /
-  minute). An optional `x-fonteum-mcp-key` header lifts the limit.
-- **Scope:** healthcare-only. Read-only — no mutation tools.
-- **REST + FHIR + OpenAPI:** the same graph is exposed as a FHIR R4 API
-  (`/api/fhir`), a JSON REST API (`/api/v1`), and an OpenAPI 3.1 spec at
-  `https://fonteum.com/openapi.json`.
+The service returns dated public-record facts. It does not issue a clearance,
+risk score, or verdict. Re-confirm a material match with the issuing authority
+before acting on it.
 
----
+## Connect
 
-## Quickstart
+- **Hosted endpoint:** `https://mcp.fonteum.com/api/mcp`
+- **Transport:** Streamable HTTP
+- **Website:** [fonteum.com](https://fonteum.com)
 
 ### Claude Code
 
@@ -35,9 +27,9 @@ scores — radical source transparency.
 claude mcp add --transport http fonteum https://mcp.fonteum.com/api/mcp
 ```
 
-### Claude Desktop / Cursor / Windsurf (remote MCP)
+### Claude Desktop, Cursor, or Windsurf
 
-Add the streamable-HTTP server to your client's MCP config:
+Add the hosted server to your MCP configuration:
 
 ```json
 {
@@ -50,143 +42,45 @@ Add the streamable-HTTP server to your client's MCP config:
 }
 ```
 
-Restart the client, then ask: `List the federal healthcare data sources Fonteum
-reconciles, then look up NPI 1003000118.`
+### Local stdio package
 
-### Local stdio alternative
-
-A self-contained local server that wraps the same public graph over stdio ships
-as the [`@fonteum/mcp`](https://www.npmjs.com/package/@fonteum/mcp) npm package:
+The same seven-tool contract is published as
+[`@fonteum/mcp` 0.3.0](https://www.npmjs.com/package/@fonteum/mcp):
 
 ```bash
-claude mcp add fonteum -- npx -y @fonteum/mcp
+claude mcp add fonteum -- npx -y @fonteum/mcp@0.3.0
 ```
-
-The hosted server (this repo) and the npm package expose the **same five tools**,
-read the same federal graph, and return the same provenance contract — enforced
-by a CI parity gate so the two surfaces cannot drift. The hosted server is the
-zero-install path; the npm package is the offline/self-hosted path.
-
----
 
 ## Tools
 
-Every tool result is a JSON envelope `{ "data": …, "provenance": { …14 keys… } }`.
-All five tools are **read-only**.
+All seven tools are read-only.
 
-### `fonteum_search_provider`
+| Tool | What it does |
+| --- | --- |
+| `fonteum_resolve_entity` | Resolves an entity by NPI, UEI, or CAGE and returns available healthcare or federal-procurement records with source context. |
+| `fonteum_search_records` | Searches US healthcare records by attributes such as vertical, state, county, name, or specialty. |
+| `fonteum_check_exclusions_and_sanctions` | Checks an NPI or name against applicable US exclusion, debarment, and sanctions lists. Re-confirm material matches with the issuing authority. |
+| `fonteum_get_record_as_of` | Returns a federal contractor record as captured on a supplied date, using a UEI or CAGE identifier. |
+| `fonteum_recheck` | Returns source and capture information to support a follow-up check of a Fonteum record. |
+| `fonteum_list_sources` | Lists Fonteum's active source families with their authority, coverage, refresh information, and official source URL. |
+| `fonteum_dataset_info` | Returns published methodology, scope, and source-catalog metadata for the current MCP service. |
 
-Search healthcare providers by vertical + state (with an optional county filter),
-name, or specialty/taxonomy. Returns up to 100 records (default 25).
+## Scope notes
 
-- **Input:** `{ "vertical": "dermatologists", "state": "TX", "limit": 5 }`
+Record availability differs by source family and jurisdiction. The tools expose
+the source context that is available for each returned record; absence of a
+result is not a determination about a person or organization.
 
-```jsonc
-// fonteum_search_provider { "vertical": "dermatologists", "state": "TX", "limit": 5 }  →
-{
-  "data": { "vertical": "dermatologists", "state": "TX", "total_in_state": 42, "returned": 5, "hits": [ { "npi": "…", "city": "…", "taxonomy_primary": "…" }, … ] },
-  "provenance": { "_source": "CMS NPPES NPI Registry", … }
-}
-```
+For the same product contract through REST and OpenAPI, use Fonteum's
+documentation at [fonteum.com](https://fonteum.com).
 
-### `fonteum_get_provider`
+## Authorship and medical review
 
-Resolve a single healthcare provider by NPI (10-digit, Luhn-checked) across all
-federal sources. Returns the joined record — specialty, taxonomy, location — with
-per-field provenance.
+This repository and the `@fonteum/mcp` package are maintained by **Fonteum
+LLC**. Medical review: **Dr. Jennifer Montecillo, MD**.
 
-- **Input:** `{ "npi": "1003000118" }`
-
-```jsonc
-// fonteum_get_provider { "npi": "1003000118" }  →
-{
-  "data": { "npi": "1003000118", "specialty_display": "Dermatologists", "state": "CA", "city": "…", "snapshot_date": "2026-06-12" },
-  "provenance": { "_source": "CMS NPPES NPI Registry", "_source_url": "https://npiregistry.cms.hhs.gov/", "_confidence": 1.0, … }
-}
-```
-
-### `fonteum_check_exclusion`
-
-Unified "excluded anywhere" check by NPI across the federal OIG List of Excluded
-Individuals/Entities (LEIE) and state Medicaid exclusion lists. Returns the
-exclusion flag and any matched exclusion records with provenance.
-
-- **Input:** `{ "npi": "1003000118" }`
-
-```jsonc
-// fonteum_check_exclusion { "npi": "1003000118" }  →
-{
-  "data": { "npi": "1003000118", "is_excluded": false, "matches": [] },
-  "provenance": { "_source": "OIG LEIE + state Medicaid exclusion lists", "_source_url": "https://oig.hhs.gov/exclusions/exclusions_list.asp", … }
-}
-```
-
-### `fonteum_dataset_info`
-
-Return the published methodology and metadata for a federal source family
-(`nppes`, `oig-leie`, `cms-pecos`, `cms-open-payments`, `cms-care-compare`, …),
-including the methodology version, canonical URL, and provenance-contract spec.
-
-- **Input:** `{ "dataset": "nppes" }`
-
-```jsonc
-// fonteum_dataset_info { "dataset": "nppes" }  →
-{
-  "data": { "dataset": "nppes", "methodology_version": "v2026.05.0", "methodology_url": "https://fonteum.com/methodology", "refresh_cadence": "weekly" },
-  "provenance": { … }
-}
-```
-
-### `fonteum_list_sources`
-
-List the federal source families Fonteum reconciles every healthcare-provider
-field against (NPPES, OIG LEIE, CMS PECOS, CMS Care Compare, CMS Open Payments,
-HRSA HPSA, and more), each with its authority, tier, refresh cadence, and the
-official source URL.
-
-- **Input:** none.
-
-```jsonc
-// fonteum_list_sources  →
-{
-  "data": { "sources": [ { "slug": "nppes", "authority": "CMS", "tier": 1, "refresh_cadence": "weekly", "official_url": "https://npiregistry.cms.hhs.gov/" }, … ], "total": 23 },
-  "provenance": { "_source": "Fonteum source registry", "_methodology": "v2026.05.0", … }
-}
-```
-
----
-
-## The fourteen-field provenance contract
-
-Every tool response carries all fourteen keys, so any fact an agent reads can be
-traced to its source, snapshot, methodology, license, coverage window, and signed
-build attestation:
-
-```
-_source            _source_url         _dataset_id            _snapshot
-_methodology       _last_checked       _confidence            _data_availability
-_pipeline_version  _doi                _license               _coverage_period_start
-_coverage_period_end                   _slsa_provenance_url
-```
-
-Field naming matches the Fonteum REST audit-pack endpoint, so tooling that
-already consumes the REST API reads MCP responses without translation. The
-contract is additive-only — keys are never stripped.
-
-## Healthcare scope
-
-This server is healthcare-only by doctrine. The verticals it resolves are:
-chiropractors, dermatologists, plastic-surgeons, med-spas, weight-loss clinics,
-rehab centers, hair-transplant clinics, fertility clinics, TRT clinics, and
-ketamine clinics. Federal source data is **US-Government-Works** (public domain);
-Fonteum composite terms apply to joined records (see the `_license` field on each
-response).
+Contact: [hello@fonteum.com](mailto:hello@fonteum.com)
 
 ## License
 
-MIT. See [`LICENSE`](./LICENSE).
-
-## Author & contact
-
-Authored by **Dr. Jennifer Montecillo, MD**, medical reviewer, Fonteum.
-Contact: `mcp@fonteum.com` · [fonteum.com](https://fonteum.com)
+MIT. See [LICENSE](./LICENSE).

@@ -1,42 +1,70 @@
-# Fonteum — Healthcare Provider Data
+# Fonteum — Public Records & Sanctions
 
 ## Tagline
-Source-provenanced US healthcare provider data with an excluded-or-compromised-anywhere check.
+
+Source-traced public records for healthcare, procurement, sanctions,
+enforcement, and corporate registers.
 
 ## Description
-Fonteum is a source-provenanced data layer for US healthcare providers and the organizations around them. It resolves any provider or facility by National Provider Identifier (NPI) or CMS Certification Number (CCN) across the major federal sources — the national provider registry, Medicare enrollment, quality data, and industry-payment records — and returns a joined record with the source, snapshot date, and license attached to every field. It determines whether a provider is excluded or otherwise compromised anywhere (federal OIG LEIE, federal SAM debarment, and state Medicaid exclusion lists, plus flags short of exclusion such as corporate integrity agreements and civil monetary penalties), traces the ownership chain behind a facility up to parent and private-equity entities, and exposes the published methodology behind every answer. It is for compliance, credentialing, payment-integrity, and due-diligence work that needs an audit-defensible provider fact tied back to its authoritative government source.
 
-## Setup Requirements
-- `FONTEUM_API_KEY` (optional): Defaults to the free read-only demo key `pk_dx_sample` (100 requests/hour/IP, no signup). Set a key for higher limits. https://fonteum.com
-- `FONTEUM_API_BASE` (optional): Override the REST API base URL. Default: https://api.fonteum.com/v1
-- Hosted endpoint requires no authentication; an optional `x-fonteum-mcp-key` header lifts the rate limit.
+Fonteum is a read-only data layer for US healthcare, federal procurement,
+sanctions and watchlists, federal enforcement, and global open-data corporate
+registers. **111 active source families in the provenance ledger as of
+2026-07-12.** Results identify the available official source, the date Fonteum
+captured the record, and relevant coverage or limitation details.
+
+Use stable identifiers such as NPI, UEI, and CAGE to resolve records; search
+US healthcare records by attribute; and check applicable exclusion, debarment,
+and sanctions lists by NPI or name. For a material match, consult the issuing
+authority before acting. Fonteum returns dated source facts, not a clearance,
+risk score, or verdict.
+
+## Connect
+
+- Hosted MCP endpoint: `https://mcp.fonteum.com/api/mcp`
+- Local stdio package: `npx -y @fonteum/mcp@0.3.0`
+- Product documentation: [fonteum.com](https://fonteum.com)
 
 ## Category
+
 Data & Analytics
 
-## Use Cases
-Provider screening, Credentialing, Compliance audit, Payment integrity, Fraud research, Healthcare due diligence, Ownership transparency
+## Use cases
 
-## Features
-- Resolve any provider or facility by NPI or CCN across federal sources, with per-field provenance
-- Excluded-or-compromised-anywhere check across federal OIG LEIE, federal SAM, and state Medicaid exclusion lists
-- Compromised-flag signals short of exclusion: corporate integrity agreements and civil monetary penalties
-- Fourteen-field provenance contract on every field (source, snapshot date, methodology version, license, signed attestation reference)
-- Facility ownership and private-equity chain lookup
-- Provider search by specialty, location, or name
-- Published methodology and source registry behind every answer
-- FHIR R4, JSON REST, and MCP access surfaces
+Public-record research, procurement research, sanctions and watchlist review,
+source-traceable reporting, program-integrity research, and corporate-register
+research.
 
-## Getting Started
-- "List the federal healthcare data sources Fonteum reconciles, then look up NPI 1003000118."
-- "Check whether NPI 1003000118 is excluded or compromised anywhere, with the source for each result."
-- "Show the ownership chain behind hospital CCN 010001."
+## Tools
+
+The hosted MCP server and `@fonteum/mcp` use the same seven read-only tools:
+
+- `fonteum_resolve_entity` — resolve an entity by NPI, UEI, or CAGE.
+- `fonteum_search_records` — search US healthcare records by attribute.
+- `fonteum_check_exclusions_and_sanctions` — check an NPI or name against
+  applicable exclusion, debarment, and sanctions lists.
+- `fonteum_get_record_as_of` — return a federal contractor record as captured
+  on a supplied date.
+- `fonteum_recheck` — return source and capture information for a follow-up
+  check.
+- `fonteum_list_sources` — list active source families and their official
+  sources.
+- `fonteum_dataset_info` — return the current methodology, scope, and
+  source-catalog metadata.
+
+## Source context
+
+Record availability varies by source family and jurisdiction. An absent record
+is not a determination about a person or organization. The REST, OpenAPI,
+hosted MCP, and npm interfaces describe the same public-records product
+contract.
 
 ## Tags
-healthcare, compliance, provider-data, npi, ccn, exclusion-screening, oig-leie, sam-gov, medicaid-exclusions, cms, open-payments, provenance, credentialing, fhir, ownership, payment-integrity
 
-## Documentation URL
-https://fonteum.com
+public-records, sanctions, watchlists, healthcare, federal-procurement,
+federal-enforcement, corporate-registers, open-data, source-traceability
 
-## Health Check URL
-https://fonteum.com/api/v1/health
+## Maintainer and medical review
+
+Fonteum LLC maintains this service. Medical review: Dr. Jennifer Montecillo,
+MD.

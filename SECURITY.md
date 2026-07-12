@@ -1,25 +1,53 @@
 # Security Policy
 
-## Authentication model
-- **Hosted endpoint** (`https://mcp.fonteum.com/api/mcp`): no authentication required. Anonymous access is rate-limited per client IP. An optional `x-fonteum-mcp-key` header raises the limit.
-- **Local / npm** (`@fonteum/mcp`): defaults to the free read-only demo key `pk_dx_sample` (no signup). Set `FONTEUM_API_KEY` for higher limits.
-- The server is **read-only**. It exposes no mutation tools and never writes to upstream sources.
+## Service model
+
+Fonteum is a read-only public-records service. It covers US healthcare,
+federal procurement, sanctions and watchlists, federal enforcement, and global
+open-data corporate registers. **111 active source families in the provenance
+ledger as of 2026-07-12.**
+
+The hosted endpoint is `https://mcp.fonteum.com/api/mcp`. This repository does
+not publish a sample credential or require one in its connection examples.
+Clients must protect any credentials issued to them and must not commit them to
+source control, logs, or MCP configuration that is shared publicly.
+
+The service exposes the same seven read-only tools described in the
+[README](./README.md):
+
+- `fonteum_resolve_entity`
+- `fonteum_search_records`
+- `fonteum_check_exclusions_and_sanctions`
+- `fonteum_get_record_as_of`
+- `fonteum_recheck`
+- `fonteum_list_sources`
+- `fonteum_dataset_info`
 
 ## Rate limiting
-- Limits are enforced per **trusted client identity** — the platform-provided source IP plus the API key — not on any client-supplied forwarding header.
-- A spoofed or forged `X-Forwarded-For` (or similar) header does **not** reset or evade the limit.
-- Current policy: anonymous hosted access ~30 requests/minute/IP; demo-key REST access ~100 requests/hour/IP. Keys lift these limits.
+
+Operational limits may change. Clients should handle rate-limit responses with
+bounded retries and backoff. The service does not rely on client-supplied
+forwarding headers to establish a caller's identity.
 
 ## Input validation
-- Every public parameter is constrained and rejected with a `400` if malformed:
-  - **NPI**: exactly 10 digits, Luhn-checked.
-  - **CCN**: validated against the CMS Certification Number format.
-  - All enum/range parameters (state, vertical, dataset, limits) are bounded to documented allowed values.
-- Constraints are published in the OpenAPI 3.1 specification.
 
-## Network access
-- The server makes **read-only outbound requests only** to named, public government data sources: CMS NPPES, OIG LEIE, GSA SAM.gov, state Medicaid exclusion lists, CMS PECOS, CMS Care Compare, CMS Open Payments, CMS ownership datasets, and GLEIF. It performs no other network egress.
-- All underlying data is public-domain federal or state government data. The server stores and returns no end-user personal data beyond already-public provider identifiers.
+Tool inputs are validated before a lookup. Stable identifiers use their
+documented formats (including NPI, UEI, and CAGE); date and search inputs are
+validated by the relevant tool.
+
+## Network access and data handling
+
+The service reads named public-record source families and returns source context
+for the records it serves. It does not provide a risk score, clearance, or
+verdict. Re-confirm a material match with the issuing authority before acting
+on it.
+
+## Maintainer and medical review
+
+Fonteum LLC maintains this service. Medical review: Dr. Jennifer Montecillo,
+MD.
 
 ## Responsible disclosure
-Report security concerns to **security@fonteum.com**. We aim to acknowledge within 3 business days.
+
+Report security concerns to **security@fonteum.com**. We aim to acknowledge
+reports within 3 business days.

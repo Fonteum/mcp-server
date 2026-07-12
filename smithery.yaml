@@ -1,62 +1,57 @@
-# Smithery.ai manifest for the hosted Fonteum MCP server.
-# Schema reference: https://smithery.ai/docs/build/project-config
-#
-# NOTE: this server is REMOTE (hosted streamable-HTTP), not a deployable code
-# package. Smithery's exact schema for remote servers evolves — treat this as a
-# best-effort shape and reconcile against the live schema at smithery.ai before
-# submitting. See PUBLISH.md.
+# Smithery manifest for the hosted Fonteum MCP server.
+# The service is a remote Streamable HTTP server; Smithery connects to the
+# existing endpoint and does not build or deploy this repository.
 
 name: "fonteum/mcp-server"
-displayName: "Fonteum — Healthcare Provider Data"
-version: "1.0.0"
+displayName: "Fonteum — Public Records & Sanctions"
+version: "0.3.0"
 description: >-
-  Hosted, read-only MCP server for the source-provenanced US federal healthcare
-  provider data graph. Resolve providers by NPI across NPPES, OIG LEIE, CMS
-  PECOS, Care Compare, and Open Payments. Every field carries a fourteen-field
-  provenance contract.
+  Hosted, read-only MCP server for Fonteum's source-traced public-records data
+  graph. It covers US healthcare, federal procurement, sanctions and
+  watchlists, federal enforcement, and global open-data corporate registers.
+  111 active source families in the provenance ledger as of 2026-07-12.
+  Results identify their source, capture date, and applicable limitations.
+  Medical review: Dr. Jennifer Montecillo, MD.
 author:
-  name: "Dr. Jennifer Montecillo, MD"
-  email: "mcp@fonteum.com"
+  name: "Fonteum LLC"
+  email: "hello@fonteum.com"
   url: "https://fonteum.com"
 license: MIT
 homepage: "https://fonteum.com"
-repository: "https://github.com/fonteum/mcp-server"
+repository: "https://github.com/Fonteum/mcp-server"
 
 categories:
-  - healthcare
+  - government
   - data
-  - provenance
+  - public-records
 
 keywords:
+  - public-records
+  - sanctions
+  - watchlists
   - healthcare
-  - provider-data
-  - nppes
-  - cms
-  - oig-leie
-  - fhir
-  - provenance
+  - federal-procurement
+  - federal-enforcement
+  - corporate-registers
+  - open-data
 
-# Remote runtime — Smithery connects to the already-hosted streamable-HTTP
-# endpoint rather than building/deploying a package.
 runtime: "remote"
 startCommand:
   type: http
   url: "https://mcp.fonteum.com/api/mcp"
-  configSchema:
-    type: object
-    properties:
-      fonteumMcpKey:
-        type: string
-        title: "Fonteum MCP key (optional)"
-        description: "Optional. Lifts the 30 requests/minute anonymous per-IP rate limit. Sent as the x-fonteum-mcp-key header."
-    required: []
 
 tools:
-  - name: list_sources
-    description: "List the 23 federal source families Fonteum reconciles against."
-  - name: get_provider
-    description: "Look up a provider by NPI with per-field provenance."
-  - name: search_providers
-    description: "Search providers by vertical + state."
-  - name: get_methodology
-    description: "Methodology version + the fourteen-field provenance contract."
+  - name: fonteum_resolve_entity
+    description: "Resolve an entity by NPI, UEI, or CAGE and return available healthcare or federal-procurement records with their source context."
+  - name: fonteum_search_records
+    description: "Search US healthcare records by attributes such as vertical, state, county, name, or specialty."
+  - name: fonteum_check_exclusions_and_sanctions
+    description: "Check an NPI or name against applicable US exclusion, debarment, and sanctions lists; re-confirm material matches with the issuing authority."
+  - name: fonteum_get_record_as_of
+    description: "Return a federal contractor record as captured on a supplied date, using a UEI or CAGE identifier."
+  - name: fonteum_recheck
+    description: "Return source and capture information to support a follow-up check of a Fonteum record."
+  - name: fonteum_list_sources
+    description: "List Fonteum's active source families with their authority, coverage, refresh information, and official source URL."
+  - name: fonteum_dataset_info
+    description: "Return published methodology, scope, and source-catalog metadata for the current MCP service."
