@@ -44,7 +44,7 @@ tools:
   - name: fonteum_resolve_entity
     description: "Resolve an entity by NPI, UEI, or CAGE and return available healthcare or federal-procurement records with their source context."
   - name: fonteum_search_records
-    description: "Search US healthcare records by attributes such as vertical, state, county, name, or specialty."
+    description: "Search US healthcare records by vertical and state, with optional county context."
   - name: fonteum_check_exclusions_and_sanctions
     description: "Check an NPI or name against applicable US exclusion, debarment, and sanctions lists; re-confirm material matches with the issuing authority."
   - name: fonteum_get_record_as_of

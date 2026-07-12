@@ -45,7 +45,7 @@
         },
         {
           "name": "fonteum_search_records",
-          "description": "Search US healthcare records by attributes such as vertical, state, county, name, or specialty."
+          "description": "Search US healthcare records by vertical and state, with optional county context."
         },
         {
           "name": "fonteum_check_exclusions_and_sanctions",

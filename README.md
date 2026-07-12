@@ -67,7 +67,7 @@ All seven tools are read-only.
 | Tool | What it does |
 | --- | --- |
 | `fonteum_resolve_entity` | Resolves an entity by NPI, UEI, or CAGE and returns available healthcare or federal-procurement records with source context. |
-| `fonteum_search_records` | Searches US healthcare records by attributes such as vertical, state, county, name, or specialty. |
+| `fonteum_search_records` | Searches US healthcare records by vertical and state, with optional county context. |
 | `fonteum_check_exclusions_and_sanctions` | Checks an NPI or name against applicable US exclusion, debarment, and sanctions lists. Re-confirm material matches with the issuing authority. |
 | `fonteum_get_record_as_of` | Returns a federal contractor record as captured on a supplied date, using a UEI or CAGE identifier. |
 | `fonteum_recheck` | Returns source and capture information to support a follow-up check of a Fonteum record. |
