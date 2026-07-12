@@ -51,6 +51,15 @@ The same seven-tool contract is published as
 claude mcp add fonteum -- npx -y @fonteum/mcp@0.3.0
 ```
 
+### Access
+
+The hosted endpoint permits anonymous, rate-limited access. If Fonteum
+separately issues a hosted transport key, send it as `x-fonteum-mcp-key`.
+That optional transport key is distinct from `FONTEUM_API_KEY`: the local
+stdio package sends `FONTEUM_API_KEY` as `Authorization: Bearer <issued-key>`
+only for selected downstream REST routes that require it. Do not substitute a
+pre-release sample header or key.
+
 ## Tools
 
 All seven tools are read-only.
