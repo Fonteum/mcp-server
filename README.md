@@ -3,7 +3,7 @@
 [![MCP Badge](https://lobehub.com/badge/mcp/fonteum-mcp-server)](https://lobehub.com/mcp/fonteum-mcp-server)
 
 Hosted, read-only Model Context Protocol (MCP) access to Fonteum's
-source-traced public-records data graph.
+source-linked public-records data graph.
 
 Fonteum covers US healthcare, federal procurement, sanctions and watchlists,
 federal enforcement, and global open-data corporate registers. **111 active
@@ -62,7 +62,7 @@ All seven tools are read-only.
 | `fonteum_check_exclusions_and_sanctions` | Checks an NPI or name against applicable US exclusion, debarment, and sanctions lists. Re-confirm material matches with the issuing authority. |
 | `fonteum_get_record_as_of` | Returns a federal contractor record as captured on a supplied date, using a UEI or CAGE identifier. |
 | `fonteum_recheck` | Returns source and capture information to support a follow-up check of a Fonteum record. |
-| `fonteum_list_sources` | Lists Fonteum's active source families with their authority, coverage, refresh information, and official source URL. |
+| `fonteum_list_sources` | Lists Fonteum's public multi-vertical source catalog and separately reports the dated active-ledger count, with authority, coverage, refresh information, and official source URLs. |
 | `fonteum_dataset_info` | Returns published methodology, scope, and source-catalog metadata for the current MCP service. |
 
 ## Scope notes

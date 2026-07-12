@@ -61,7 +61,7 @@
         },
         {
           "name": "fonteum_list_sources",
-          "description": "List Fonteum's active source families with their authority, coverage, refresh information, and official source URL."
+          "description": "List Fonteum's public multi-vertical source catalog and separately report the dated active-ledger count, with authority, coverage, refresh information, and official source URLs."
         },
         {
           "name": "fonteum_dataset_info",
