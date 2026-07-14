@@ -1,17 +1,18 @@
-# Fonteum — Public Records & Sanctions
+# Fonteum — Public Records & Enforcement Integrity
 
 ## Tagline
 
-Source-traced public records for healthcare, procurement, sanctions,
-enforcement, and corporate registers.
+Source-linked public records for healthcare, procurement, sanctions,
+enforcement, and global company registers.
 
 ## Description
 
-Fonteum is a read-only data layer for US healthcare, federal procurement,
-sanctions and watchlists, federal enforcement, and global open-data corporate
-registers. **111 active source families in the provenance ledger as of
-2026-07-12.** Results identify the available official source, the date Fonteum
-captured the record, and relevant coverage or limitation details.
+Fonteum is a read-only public-records and enforcement-integrity data platform
+for US healthcare, federal procurement, sanctions and watchlists, federal
+enforcement, intellectual property, securities filings, and supported global
+open-data company registers. Results identify the official source, the date
+Fonteum captured the record when available, and relevant coverage or limitation
+details.
 
 Use stable identifiers such as NPI, UEI, and CAGE to resolve records; search
 US healthcare records by attribute; and check applicable exclusion, debarment,
@@ -37,20 +38,20 @@ research.
 
 ## Tools
 
-The hosted MCP server and `@fonteum/mcp` use the same seven read-only tools:
+The hosted MCP server exposes these read-only tools:
 
-- `fonteum_resolve_entity` — resolve an entity by NPI, UEI, or CAGE.
-- `fonteum_search_records` — search US healthcare records by attribute.
-- `fonteum_check_exclusions_and_sanctions` — check an NPI or name against
-  applicable exclusion, debarment, and sanctions lists.
-- `fonteum_get_record_as_of` — return a federal contractor record as captured
-  on a supplied date.
-- `fonteum_recheck` — return source and capture information for a follow-up
-  check.
-- `fonteum_list_sources` — list active source families and their official
-  sources.
-- `fonteum_dataset_info` — return the current methodology, scope, and
-  source-catalog metadata.
+- `fonteum_resolve_entity` — find records for one NPI, UEI, or CAGE identifier.
+- `fonteum_search_records` — find matching healthcare-provider records by
+  provider type and state.
+- `fonteum_check_exclusions_and_sanctions` — show supported list entries for
+  an NPI or name.
+- `fonteum_get_record_as_of` — show available contractor records for a supplied
+  identifier and past date.
+- `fonteum_recheck` — inspect Fonteum's stored verification record or a
+  specified snapshot.
+- `fonteum_list_sources` — show the current public source catalog.
+- `fonteum_dataset_info` — explain current method, coverage notes, and how to
+  read source details.
 
 ## Source context
 

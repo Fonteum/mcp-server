@@ -1,9 +1,9 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Fonteum/mcp-server",
-  "title": "Fonteum — Public Records & Sanctions",
-  "description": "Multi-vertical public-records: 111 active source families in the provenance ledger as of 2026-07-12.",
-  "version": "0.3.0",
+  "title": "Fonteum — Public Records & Enforcement Integrity",
+  "description": "Hosted, read-only MCP access to source-linked public records from the United States and supported global open-data registers. Search or resolve available healthcare and federal-contractor records, check supported exclusion and sanctions records, inspect source context, and read the current methodology. Results are public-record facts, not clearances, risk scores, labels, or verdicts.",
+  "version": "1.0.0",
   "websiteUrl": "https://fonteum.com",
   "repository": {
     "url": "https://github.com/Fonteum/mcp-server",
@@ -41,31 +41,31 @@
       "tools": [
         {
           "name": "fonteum_resolve_entity",
-          "description": "Resolve an entity by NPI, UEI, or CAGE and return available healthcare or federal-procurement records with their source context."
+          "description": "Find the available public records for one NPI, UEI, or CAGE identifier. Returns available healthcare or federal-contractor records and their source context."
         },
         {
           "name": "fonteum_search_records",
-          "description": "Search US healthcare records by vertical and state, with optional county context."
+          "description": "Find matching healthcare-provider records for a provider type and state. This search is limited to the available healthcare search data."
         },
         {
           "name": "fonteum_check_exclusions_and_sanctions",
-          "description": "Check an NPI or name against applicable US exclusion, debarment, and sanctions lists; re-confirm material matches with the issuing authority."
+          "description": "Show any supported exclusion, debarment, or sanctions-list entries for an NPI or name, with the issuing authority and available source timing. Re-confirm a material match with that authority."
         },
         {
           "name": "fonteum_get_record_as_of",
-          "description": "Return a federal contractor record as captured on a supplied date, using a UEI or CAGE identifier."
+          "description": "Show available federal-contractor records for a supplied UEI or CAGE and past date. Historical coverage depends on the underlying source."
         },
         {
           "name": "fonteum_recheck",
-          "description": "Return source and capture information to support a follow-up check of a Fonteum record."
+          "description": "Provide a link and metadata to inspect Fonteum's current stored verification record, or one specified snapshot. This supports inspection of the artifact; it does not prove every returned fact."
         },
         {
           "name": "fonteum_list_sources",
-          "description": "List Fonteum's public multi-vertical source catalog and separately report the dated active-ledger count, with authority, coverage, refresh information, and official source URLs."
+          "description": "List Fonteum's current public source catalog, including official publishers, source links, update notes, and reuse information when available."
         },
         {
           "name": "fonteum_dataset_info",
-          "description": "Return published methodology, scope, and source-catalog metadata for the current MCP service."
+          "description": "Explain Fonteum's current method, coverage notes, how to read source details, and the generated source catalog."
         }
       ]
     }

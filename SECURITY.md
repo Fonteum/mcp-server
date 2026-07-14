@@ -2,18 +2,17 @@
 
 ## Service model
 
-Fonteum is a read-only public-records service. It covers US healthcare,
-federal procurement, sanctions and watchlists, federal enforcement, and global
-open-data corporate registers. **111 active source families in the provenance
-ledger as of 2026-07-12.**
+Fonteum is a read-only public-records and enforcement-integrity service. It
+covers US healthcare, federal procurement, sanctions and watchlists, federal
+enforcement, intellectual property, securities filings, and supported global
+open-data company registers.
 
 The hosted endpoint is `https://fonteum.com/api/mcp`. This repository does
 not publish a sample credential or require one in its connection examples.
 Clients must protect any credentials issued to them and must not commit them to
 source control, logs, or MCP configuration that is shared publicly.
 
-The service exposes the same seven read-only tools described in the
-[README](./README.md):
+The service exposes the read-only tools described in the [README](./README.md):
 
 - `fonteum_resolve_entity`
 - `fonteum_search_records`
