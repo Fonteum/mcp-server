@@ -1,64 +1,71 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.fonteum/mcp-server",
-  "title": "Fonteum — Healthcare Provider Data (hosted)",
-  "description": "Hosted, read-only MCP server for the source-provenanced US federal healthcare provider data graph. Resolve providers by NPI across NPPES, OIG LEIE, CMS PECOS, Care Compare, and Open Payments; list the 23 federal source families; read published methodology. Every field carries a 14-tuple provenance contract (source, snapshot, methodology, license, coverage window, signed build attestation).",
+  "name": "io.github.Fonteum/mcp-server",
+  "title": "Fonteum — Public Records & Enforcement Integrity",
+  "description": "Hosted, read-only MCP access to source-linked public records from the United States and supported global open-data registers. Search or resolve available healthcare and federal-contractor records, check supported exclusion and sanctions records, inspect source context, and read the current methodology. Results are public-record facts, not clearances, risk scores, labels, or verdicts.",
   "version": "1.0.0",
   "websiteUrl": "https://fonteum.com",
   "repository": {
-    "url": "https://github.com/fonteum/mcp-server",
+    "url": "https://github.com/Fonteum/mcp-server",
     "source": "github"
   },
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://mcp.fonteum.com/api/mcp",
-      "headers": [
-        {
-          "name": "x-fonteum-mcp-key",
-          "description": "Optional. Anonymous access is rate-limited per IP (30 requests/minute). Set a key to lift the limit. Request one at mcp@fonteum.com.",
-          "isRequired": false,
-          "isSecret": true
-        }
-      ]
+      "url": "https://fonteum.com/api/mcp"
     }
   ],
   "_meta": {
     "io.modelcontextprotocol.registry/publisher-provided": {
       "author": {
-        "name": "Dr. Jennifer Montecillo, MD",
-        "email": "mcp@fonteum.com",
+        "name": "Fonteum LLC",
+        "email": "hello@fonteum.com",
         "url": "https://fonteum.com"
       },
+      "medicalReview": {
+        "name": "Dr. Jennifer Montecillo, MD",
+        "role": "Medical reviewer"
+      },
       "license": "MIT",
-      "categories": ["healthcare", "data", "provenance"],
+      "categories": ["government", "data", "public-records"],
       "keywords": [
+        "public-records",
+        "sanctions",
+        "watchlists",
         "healthcare",
-        "provider-data",
-        "nppes",
-        "cms",
-        "oig-leie",
-        "open-payments",
-        "fhir",
-        "provenance",
+        "federal-procurement",
+        "federal-enforcement",
+        "corporate-registers",
         "open-data"
       ],
       "tools": [
         {
-          "name": "list_sources",
-          "description": "List the 23 federal source families Fonteum reconciles every healthcare-provider field against, each with authority, tier, refresh cadence, and official source URL."
+          "name": "fonteum_resolve_entity",
+          "description": "Find the available public records for one NPI, UEI, or CAGE identifier. Returns available healthcare or federal-contractor records and their source context."
         },
         {
-          "name": "get_provider",
-          "description": "Look up a single healthcare provider by NPI (10-digit, Luhn-checked); returns specialty, taxonomy, and location with per-field provenance."
+          "name": "fonteum_search_records",
+          "description": "Find matching healthcare-provider records for a provider type and state. This search is limited to the available healthcare search data."
         },
         {
-          "name": "search_providers",
-          "description": "Search healthcare providers by vertical + state (optional county); returns up to 100 records with provenance."
+          "name": "fonteum_check_exclusions_and_sanctions",
+          "description": "Show any supported exclusion, debarment, or sanctions-list entries for an NPI or name, with the issuing authority and available source timing. Re-confirm a material match with that authority."
         },
         {
-          "name": "get_methodology",
-          "description": "Return the Fonteum methodology version, the canonical /methodology URL, and the fourteen-field provenance contract spec."
+          "name": "fonteum_get_record_as_of",
+          "description": "Show available federal-contractor records for a supplied UEI or CAGE and past date. Historical coverage depends on the underlying source."
+        },
+        {
+          "name": "fonteum_recheck",
+          "description": "Provide a link and metadata to inspect Fonteum's current stored verification record, or one specified snapshot. This supports inspection of the artifact; it does not prove every returned fact."
+        },
+        {
+          "name": "fonteum_list_sources",
+          "description": "List Fonteum's current public source catalog, including official publishers, source links, update notes, and reuse information when available."
+        },
+        {
+          "name": "fonteum_dataset_info",
+          "description": "Explain Fonteum's current method, coverage notes, how to read source details, and the generated source catalog."
         }
       ]
     }
